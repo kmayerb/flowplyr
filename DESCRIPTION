@@ -1,0 +1,11 @@
+Package: flowplyr
+Type: Package
+Title: Read and Manipulate .fcs, .xml, .fcm files Associated with Flow Cytometry
+Version: 0.1.0
+Author: Koshlan Mayer-Blackwell, Andrew Fiore-Gartland
+Maintainer: Koshlan Mayer-Blackwell <kmayerbl@fredhutch.org>
+Description: Read and Manipulate .fcs, .xml, .fcm files Associated with Flow Cytometry.
+    Use four spaces when indenting paragraphs within the Description.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
