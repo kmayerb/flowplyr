@@ -9,3 +9,12 @@ Description: Read and Manipulate .fcs, .xml, .fcm files Associated with Flow Cyt
 License: What license is it under?
 Encoding: UTF-8
 LazyData: true
+Imports: 
+  flowWorkspace,
+  parallel,
+  flowCore,
+  CytoML,
+  feather
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
