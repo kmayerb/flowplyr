@@ -1,0 +1,14 @@
+{
+  "batch_name": "test_flowplyr_batch",
+  "xml_path": "/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data/flowplyr_test_data.xml",
+  "fcs_folder_path": "/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data/flowplyr_test_fcs_folder/",
+  "output_path": "/fh/fast/gilbert_p/fg_data/ics_test/gs_output/flowplyr_test_batch/",
+  "parent_gate": "/Time/S/14-/Lv/L/3+",
+  "write_csv": false,
+  "write_h5": true,
+  "xml_keywords": ["$FIL", "Stim", "Sample Order", "EXPERIMENT NAME", "Replicate"],
+  "key_markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
+  "8+/IL4+", "8+/IL17a+", "8+/TNFa+"],
+  "markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
+  "8+/IL4+", "8+/IL17a+", "8+/TNFa+"]
+}
