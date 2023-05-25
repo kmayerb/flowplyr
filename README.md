@@ -99,9 +99,35 @@ specify these parameters in a `param.json` file
 ### run commandline `extract_flow_events.R` on test data
 
 ```
-Rscript extract_flow_events.R --params /tests/test_params.json
+Rscript extract_flow_events.R --params tests/test_params.json
 ```
 
+### Outputs
 
+The output if written in .h5 format has three component tables:
+
+*`data/pos`
+*`data/fi`
+*`data/fcs_index`
+
+
+```python
+import h5py
+import numpy as np
+import pandas as pd
+hdf5_file = '/fh/fast/gilbert_p/fg_data/ics_test/gs_output/flowplyr_test_batch/test_flowplyr_batch.h5'
+fcs_ = pd.read_hdf(hdf5_file, key = "data/fcs_index")
+hf = h5py.File(hdf5_file , 'r')
+pos_ = hf.get('data/pos')
+pos_ = np.array(pos_)
+fi_ = hf.get('data/fi')
+fi_ = np.array(fi_)
+cols_pos = hf.get('data/cols_pos')
+cols_fi = hf.get('data/cols_fi')
+pos = pd.DataFrame(pos_.transpose(), columns = pd.Series(cols_pos).str.decode('UTF-8'))
+fi = pd.DataFrame(fi_.transpose(), columns = pd.Series(cols_fi).str.decode('UTF-8'))
+assert(fcs_.shape[0] == pos.shape[0])
+assert(fcs_.shape[0] == fi.shape[0])
+```
 
 

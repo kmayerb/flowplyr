@@ -60,10 +60,11 @@ for (i in 1:length(my_gs)){
 
 # Concatenate the 'pos', 'fi' and 'fcs_index' data.frames from stored list
 # single data.frames.
-pos_ = do.call(rbind, purrr::map(store, ~.x$pos))
+pos_ = do.call(rbind, purrr::map(store, ~.x$pos))*1
 fi_  = do.call(rbind, purrr::map(store, ~.x$fi))
 fcs_ = do.call(rbind, purrr::map(store, ~.x$fcs_index))
-
+cols_fi = colnames(fi_)
+cols_pos = colnames(pos_) 
 # Section on output
 
 # Optionally write .csv files
@@ -91,6 +92,9 @@ if (params$write_h5){
   rhdf5::h5write(pos_, h5_name, "data/pos")
   rhdf5::h5write(fi_,  h5_name, "data/fi")
   rhdf5::h5write(fcs_, h5_name, "data/fcs_index")
+  rhdf5::h5write(cols_pos, h5_name, "data/cols_pos")
+  rhdf5::h5write(cols_fi, h5_name, "data/cols_fi")
+  
   rhdf5::h5closeAll()
 }
 
