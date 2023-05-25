@@ -1,0 +1,23 @@
+Package: flowplyr
+Type: Package
+Title: Extract flow cytometry data
+Version: 0.1.0
+Author: kmayerbl, agartlan
+Maintainer: The package maintainer <kmayerblf@fredhutch.org>
+Description: Extract flow cytometry data from pre version 10
+    FlowJo xml and fcs files. Reatain only cell events that are positive 
+    for key markers, allowing for downsteam clustering of fluorescent
+    intensities.
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports:
+  flowWorkspace,
+  CytoML,
+  flowCore,
+  parallel,
+  rhdf5,
+  jsonlite
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
