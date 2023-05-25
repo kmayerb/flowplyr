@@ -109,7 +109,7 @@ extract_events <- function(g,
 #'
 #' @param gs
 #'
-#' @return
+#' @return list of full paths (e.g., /Time/S/14-/Lv/L/3+)
 #' @export
 #'
 #' @examples
@@ -123,7 +123,7 @@ extract_marker_paths <-function(gs){
 #'
 #' @param gs
 #'
-#' @return
+#' @return list of short markers names using path = "auto" (e.g, "154+" )
 #' @export
 #'
 #' @examples
@@ -138,7 +138,7 @@ extract_markers <-function(gs){
 #'
 #' @param gs
 #'
-#' @return
+#' @return a list of markers with parent 4+ e.g., c("4+/154+", "4+/GzB+")
 #' @export
 #'
 #' @examples
@@ -155,7 +155,7 @@ extract_cd4_markers <-function(gs){
 #'
 #' @param gs
 #'
-#' @return
+#' @return  a list of markers with parent 4+ e.g., c("8+/154+", "8+/GzB+")
 #' @export
 #'
 #' @examples
