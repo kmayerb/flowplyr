@@ -1,7 +1,7 @@
 # flowplyr
 Read and manipulate .fcs, .xml files associated with flow cytoplasms events for downstream analysis
 
-## test data
+### test data
 
 * Test data for flowplyr can be accessed `/fg_data/ics_test/flowplyr_test_data`
 * For link to test data `flowplyr_test_data.zip` (791.2 MB) contact maintainer.
@@ -20,13 +20,13 @@ flowplyr_test_data
     └── Specimen_004_C4_C04_028.fcs
 ```
 
-## preliminary identification of parent_gate and relevant markers
+### preliminary identification of parent_gate and relevant markers
 
 In order to run `extract_flow_events.R`, the user must specify a `parent_gate` and a list of `key_markers`. Only cells (i.e., flow events) within gates for one or more of the `key_markers` are retained in final tabular output, however, the output can include columns for fluorescent intensity for a larger set of `markers` that are not used for subsetting.
 
 To identify an appropriate `parent_gate`, `markers`, and `key_markers`, one can first run the helper script `extract_marker_paths.R`.
 
-## run commandline `extract_marker_paths.R` on test data
+#### run commandline `extract_marker_paths.R` on test data
 
 ```
 TESTPATH=/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data
@@ -35,7 +35,7 @@ Rscript extract_marker_paths.R \
   --fcs_folder_path $TESTPATH/flowplyr_test_fcs_folder/
 ```
 
-### abbreviated output
+#### abbreviated output
 
 This will load a FlowWorskpace gating_set object from the .xml and fcs files 
 and provide a list of marker paths as well as CD4 and CD8 markers lists that 
@@ -52,14 +52,14 @@ c("8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
 ```
 
 
-## specification of params.json
+### specification of params.json
 
 Once the `parent_gate` and `key_markers` are identified, to extract flow event data, 
 create a params.json file. An example is provided `tests/test_params.json`
 
 
 
-### parameters
+#### parameters
 
 specify these parameters in a `param.json` file
 
@@ -75,7 +75,7 @@ specify these parameters in a `param.json` file
 * `write_h5`        - (logical) write output as .h5 if TRUE
 
 
-### params.json for the test data
+#### params.json for the test data
 
 ```{json}
 {
@@ -94,7 +94,7 @@ specify these parameters in a `param.json` file
 }
 ```
 
-## run commandline `extract_flow_events.R` on test data
+### run commandline `extract_flow_events.R` on test data
 
 ```
 Rscript extract_flow_events.R --params /tests/test_params.json
