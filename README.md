@@ -41,6 +41,8 @@ This will load a FlowWorskpace gating_set object from the .xml and fcs files
 and provide a list of marker paths as well as CD4 and CD8 markers lists that 
 can be used directly in the next step.
 
+![example_gate_scheme](https://github.com/kmayerb/flowplyr/assets/46639063/77d091f8-a295-4050-8d62-104784bae282)
+
 ```
 02:29:08 PM Gating Paths:
 ...
