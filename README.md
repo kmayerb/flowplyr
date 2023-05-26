@@ -1,5 +1,5 @@
 # flowplyr
-Read and manipulate .fcs, .xml files associated with flow cytoplasms events for downstream analysis
+Read and manipulate .fcs, .xml files associated with flow cytometry events for downstream analysis
 
 ### test data
 
