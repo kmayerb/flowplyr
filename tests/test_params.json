@@ -7,7 +7,7 @@
   "write_csv": false,
   "write_h5": true,
   "xml_keywords": ["$FIL", "Stim", "Sample Order", "EXPERIMENT NAME", "Replicate"],
-  "key_markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
+  "functional_markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
   "8+/IL4+", "8+/IL17a+", "8+/TNFa+"],
   "markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
   "8+/IL4+", "8+/IL17a+", "8+/TNFa+"]

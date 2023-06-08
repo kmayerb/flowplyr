@@ -70,7 +70,7 @@ specify these parameters in a `param.json` file
 * `fcs_folder_path` - (character) file path to folder with .fcs files
 * `parent_gate`     - (character) specifying the parent path for the analysis 
 * `xml_keywords`    - (vector) keywords used for extracting relevant information for the .xml file
-* `key_markers`     - (vector) only cells (events) that fall into one of these marker gates will be retains
+* `functional_markers`     - (vector) only cells (events) that fall into one of these marker gates will be retains
 * `markers`         - (vector) potentially larger set of markers to include in the output
 * `output_path`     - (character) path to write output files
 * `write_csv`       - (logical) write output as .csv if TRUE
@@ -89,7 +89,7 @@ specify these parameters in a `param.json` file
   "write_csv": false,
   "write_h5": true,
   "xml_keywords": ["$FIL", "Stim", "Sample Order", "EXPERIMENT NAME", "Replicate"],
-  "key_markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
+  "functional_markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
   "8+/IL4+", "8+/IL17a+", "8+/TNFa+"],
   "markers" : ["8+/154+", "8+/GzB+", "8+/IFNg+", "8+/IFNg\\IL2", "8+/IL2+",
   "8+/IL4+", "8+/IL17a+", "8+/TNFa+"]

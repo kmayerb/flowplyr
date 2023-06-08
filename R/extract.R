@@ -43,7 +43,7 @@ get_gs <- function(xml_path,
 #' @param g - a sample object within a FlowWorkspace gated set object
 #' @param parent_gate - string specifying the parent gate of all markers
 #' @param markers - vector of all marker to retain in output
-#' @param key_markers - vector of key marker names, used for subseting
+#' @param functional_markers - vector of key marker names, used for subseting
 #' to only events gated within one or more key markers
 #'
 #' @return list with three data.frame elements 'pos' , 'fi' , and 'fcs_index'
@@ -53,7 +53,7 @@ get_gs <- function(xml_path,
 extract_events <- function(g,
                            parent_gate,
                            markers,
-                           key_markers){
+                           functional_markers){
 
 
   # #xtract meta-data, on the experiment name <exp_name> and <fcs_name>
@@ -72,8 +72,8 @@ extract_events <- function(g,
                 FUN.VALUE = logical(total_events))
 
   # Get <ix> is a logical index, True if the event coincided with any of the
-    # key_markers' gates
-  ix = rowSums(pos[,key_markers]) >= 1
+    # functional_markers' gates
+  ix = rowSums(pos[,functional_markers]) >= 1
   # Get <fi> matrix of florescent intensity
   fi <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
 

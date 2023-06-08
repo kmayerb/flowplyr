@@ -35,7 +35,7 @@ message(paste0("\n",flowWorkspace::gs_get_pop_paths(my_gs)))
 message(sprintf("%s Makers:", format(Sys.time(), "%X")))
 print(params$markers)
 message(sprintf("%s Key Makers:", format(Sys.time(), "%X")))
-print(params$key_markers)
+print(params$functional_markers)
 
 
 # Loop through all of the samples in the gated_set:
@@ -52,7 +52,7 @@ for (i in 1:length(my_gs)){
   my_result = extract_events(g = my_gs[[i]],
                              parent_gate = params$parent_gate,
                              markers = params$markers,
-                             key_markers = params$key_markers)
+                             functional_markers = params$functional_markers)
   message(sprintf("(%s of %s) %s\t%s\t%s", i, length(my_gs), format(Sys.time(), "%X"), params$batch_name, fcs_name))
   # each result is a list() with 3 data entries ('pos', fi', and 'fcs_index')
   store[[i]] = my_result
