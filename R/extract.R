@@ -1,6 +1,7 @@
 ######
 # May 23, 2023
 # Dependencies contained within ml fhR/4.2.0-foss-2021b
+# No other install necessary
 
 #' get_gated_set
 #'
@@ -17,7 +18,7 @@
 get_gs <- function(xml_path,
                    fcs_folder_path,
                    xml_keywords){
-
+  # Example of 
   # xml_keywords <- c("$FIL",
   #                   "Stim",
   #                   "Sample Order",
@@ -53,13 +54,25 @@ get_gs <- function(xml_path,
 extract_events <- function(g,
                            parent_gate,
                            markers,
-                           functional_markers){
+                           functional_markers,
+                           experiment_name = 'EXPERIMENT NAME',
+                           sample_order = 'Sample Order',
+                           replicate = 'Replicate',
+                           stim = 'Stim',
+                           name = 'name'){
 
 
-  # #xtract meta-data, on the experiment name <exp_name> and <fcs_name>
+  # To avoid hard coding we passed in columns names like `EXPERIMENT NAME`
+  # these will like need to match xml_keywords used in prior get_gs() step
+
+  # #Extract meta-data, on the experiment name <exp_name> and <fcs_name>
   pd = flowWorkspace::pData(g)
-  exp_name <- pd$`EXPERIMENT NAME`
-  fcs_name <- paste(pd$`EXPERIMENT NAME`, pd$"Sample Order", pd$Replicate, pd$Stim, pd$name, sep = "|")
+    exp_name <- pd[[experiment_name]]
+  fcs_name <- paste(pd[[experiment_name]], 
+                    pd[[sample_order]], 
+                    pd[[replicate]], 
+                    pd[[stim]], 
+                    pd[[name]], sep = "|")
 
   # Get <total_events> identify the number of total_events - integer sepcifying
   # total number of events recorded
@@ -90,11 +103,12 @@ extract_events <- function(g,
   rownames(fi) <- paste(fcs_name, seq_len(nrow(fi)), sep = "|")
   rownames(pos) <- paste(fcs_name, seq_len(nrow(pos)), sep = "|")
 
+
   fcs_cells = data.frame(list("cell"=seq_len(nrow(fi)),
-                              "experiment_name"=pd$`EXPERIMENT NAME`,
-                              "sample_order"=pd$`Sample Order`,
-                              "stim"=pd$Stim,
-                              "name"=pd$name,
+                              "experiment_name"=pd[[experiment_name]],#$`EXPERIMENT NAME`,
+                              "sample_order"=pd[[sample_order]],#$`Sample Order`,
+                              "stim"=pd[[stim]],#$Stim,
+                              "name"=pd[[name]], #$name,
                               "parent_ct"=total_events))
   result = list('pos' = pos,
                 'fi' = fi,

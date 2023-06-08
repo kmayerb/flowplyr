@@ -18,6 +18,12 @@ if (!file.exists(params_file)) {
 params <- jsonlite::fromJSON(params_file)
 print(params)
 
+# these are additional params that we may need to hard code
+params$experiment_name = 'EXPERIMENT NAME'
+params$sample_order = 'Sample Order'
+params$replicate = 'Replicate'
+params$stim = 'Stim'
+params$name = 'name'
 
 
 # First, assemble the gating set using xml file, fcs folder and xml_keywords
@@ -46,13 +52,24 @@ store = list()
 # Loop through each gated entry in the gated set
 for (i in 1:length(my_gs)){
   pd = flowWorkspace::pData(my_gs[[i]])
-  exp_name <- pd$`EXPERIMENT NAME`
-  fcs_name <- paste(pd$`EXPERIMENT NAME`, pd$"Sample Order", pd$Replicate, pd$Stim, pd$name, sep = "|")
+  exp_name <- pd[[params$experiment_name]]#$`EXPERIMENT NAME`
+  fcs_name <- paste(pd[[params$experiment_name]], 
+                    pd[[params$sample_order]], 
+                    pd[[params$replicate]], 
+                    pd[[params$stim]],
+                    pd[[params$name]], sep = "|")
+  
+  #fcs_name <- paste(pd$`EXPERIMENT NAME`, pd$"Sample Order", pd$Replicate, pd$Stim, pd$name, sep = "|")
 
-  my_result = extract_events(g = my_gs[[i]],
-                             parent_gate = params$parent_gate,
-                             markers = params$markers,
-                             functional_markers = params$functional_markers)
+  my_result = extract_events(g                  = my_gs[[i]],
+                             parent_gate        = params$parent_gate,
+                             markers            = params$markers,
+                             functional_markers = params$functional_markers,
+                             experiment_name    = params$experiment_name, 
+                             sample_order       = params$sample_order, 
+                             replicate          = params$replicate, 
+                             stim               = params$stim,
+                             name               = params$stim)
   message(sprintf("(%s of %s) %s\t%s\t%s", i, length(my_gs), format(Sys.time(), "%X"), params$batch_name, fcs_name))
   # each result is a list() with 3 data entries ('pos', fi', and 'fcs_index')
   store[[i]] = my_result
