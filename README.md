@@ -131,3 +131,13 @@ assert(fcs_.shape[0] == fi.shape[0])
 ```
 
 
+### Larger test
+```
+XML_PATH="/fh/fast/gilbert_p/fg_data/POI_COR/data/Aeras C040-404 BCG Correlates PoI Pilot/new_XMLs_assoc_wFCM_20220908/1814-R-C040 BCG CoR v2-FJ.xml"
+FCS_PATH="/fh/fast/gilbert_p/fg_data/POI_COR/data/Aeras C040-404 BCG Correlates PoI Pilot/1814-R-C040-404 BCG"
+
+TESTPATH=/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data
+Rscript extract_marker_paths.R \
+  --xml_path $TESTPATH/flowplyr_test_data.xml \
+  --fcs_folder_path $TESTPATH/flowplyr_test_fcs_folder/
+

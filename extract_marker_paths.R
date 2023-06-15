@@ -59,6 +59,9 @@ message(sprintf("%s Loaded a Gating Set with %s Samples", format(Sys.time(), "%X
 # Next we can analyze the associated marker tree
 message(sprintf("%s Gating Paths:", format(Sys.time(), "%X")))
 message(paste0("\n",flowWorkspace::gs_get_pop_paths(my_gs)))
+
+print(paste0("\n",flowWorkspace::gs_get_pop_paths(my_gs)))
+
 # <markers>
 all_marker_paths = extract_marker_paths(my_gs)
 all_markers      = extract_markers(my_gs)

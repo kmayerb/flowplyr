@@ -39,6 +39,37 @@ get_gs <- function(xml_path,
   return(gs)
 }
 
+#' extract transform
+#'
+#' @param g 
+#' @param sample_name 
+#'
+#' @return tibble - wide format with transformation name and paramter values
+#' @export
+#'
+#' @examples
+extract_transform <- function(g, sample_name){
+  #sample_name = sampleNames(my_gs)[i]
+  markers = names(flowWorkspace::markernames(g))
+  targets = as.vector(flowWorkspace::markernames(g))
+  # create a list to store transformation parameters
+  store = list()
+  for (j in seq_along(markers)){
+    m = markers[j]
+    target = targets[j]
+    trans = flowWorkspace::gh_get_transformations(g, m)
+    trans_type = attributes(trans)$type
+    dfx = as.data.frame(attributes(trans)$parameter)
+    dfx['transformation'] = trans_type
+    dfx['channel'] = m
+    dfx['target'] = target
+    dfx['sample'] = sample_name
+    store[[m]] = dfx
+  }
+  dfx_gh = dplyr::bind_rows(store)
+  return(dfx_gh)
+}
+
 #' extract_events
 #'
 #' @param g - a sample object within a FlowWorkspace gated set object
@@ -75,9 +106,12 @@ extract_events <- function(g,
                     pd[[name]], sep = "|")
 
   # Get <total_events> identify the number of total_events - integer sepcifying
-  # total number of events recorded
+  # <total_events> number of events recorded in a sample
   total_events <- length(flowWorkspace::gh_pop_get_indices(g, '/'))
-
+  # <parent_events> number of cells that fall in parent gate
+  parent_events <- sum(flowWorkspace::gh_pop_get_indices(g, parent_gate))
+  
+  
   # Get <pos> is a matrix of booleans whether an event falls in a specific gate
   #   it has row dimensions events, column dimensions markers
   pos <- vapply(X         = markers,
@@ -88,13 +122,16 @@ extract_events <- function(g,
     # functional_markers' gates
   ix = rowSums(pos[,functional_markers]) >= 1
   # Get <fi> matrix of florescent intensity
-  fi <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
-
+  fi  <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
+  raw <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g, inverse.transform = TRUE))
+  
   # Subset to only those rows where event falls in gate(s) of a key marker
   # <pos> subset
   pos = pos[ix,]
   # <fi> subset
   fi   = fi[ix,]
+  # <raw> subset
+  raw  = raw[ix,]
   # Names of fi channels
   fi_channels <- flowWorkspace::pData(flowCore::parameters(flowWorkspace::gh_pop_get_data(g))[ ,c("name", "desc")])
   # Combine the names e.g., (<G780-A>) with desc  e.g., IL-17a
@@ -109,15 +146,23 @@ extract_events <- function(g,
                               "sample_order"=pd[[sample_order]],#$`Sample Order`,
                               "stim"=pd[[stim]],#$Stim,
                               "name"=pd[[name]], #$name,
-                              "parent_ct"=total_events))
+                              "total_ct" = total_events,
+                              "parent_ct"= parent_events))
   result = list('pos' = pos,
                 'fi' = fi,
+                'raw' = raw,
                 'fcs_index' = fcs_cells)
 
   return(result)
 }
 
-
+check_stim <-function(stim_name, exclusion_list = c('phactrl', 'sebctrl')){
+  if (stim_name %in% exclusion_list){
+    return(FALSE)
+  }else{
+    return(TRUE)
+  }
+}
 
 #' extract_marker_paths
 #'
