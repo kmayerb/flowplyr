@@ -18,7 +18,7 @@ Imports:
   parallel,
   rhdf5,
   jsonlite,
-  magritter
+  magrittr
 Suggests: 
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
