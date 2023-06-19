@@ -83,6 +83,7 @@ extract_transform <- function(g, sample_name){
 #'
 #' @examples
 extract_events <- function(g,
+                           sample_name,
                            parent_gate,
                            markers,
                            functional_markers,
@@ -121,37 +122,81 @@ extract_events <- function(g,
   # Get <ix> is a logical index, True if the event coincided with any of the
     # functional_markers' gates
   ix = rowSums(pos[,functional_markers]) >= 1
-  # Get <fi> matrix of florescent intensity
-  fi  <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
-  raw <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g, inverse.transform = TRUE))
   
-  # Subset to only those rows where event falls in gate(s) of a key marker
-  # <pos> subset
-  pos = pos[ix,]
-  # <fi> subset
-  fi   = fi[ix,]
-  # <raw> subset
-  raw  = raw[ix,]
-  # Names of fi channels
-  fi_channels <- flowWorkspace::pData(flowCore::parameters(flowWorkspace::gh_pop_get_data(g))[ ,c("name", "desc")])
-  # Combine the names e.g., (<G780-A>) with desc  e.g., IL-17a
-  colnames(fi) <- paste(seq_len(ncol(fi)),fi_channels$name, fi_channels$desc, sep = "|")
-  # Assign rownams based on fcs_name and seq counter
-  rownames(fi) <- paste(fcs_name, seq_len(nrow(fi)), sep = "|")
-  rownames(pos) <- paste(fcs_name, seq_len(nrow(pos)), sep = "|")
+  if (sum(ix) > 0){
+    # Get <fi> matrix of florescent intensity
+    fi  <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
+    raw <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g, inverse.transform = TRUE))
+    
+    # Subset to only those rows where event falls in gate(s) of a key marker
+    # <pos> subset
+    pos = pos[ix,,drop = FALSE]
+    # <fi> subset
+    fi   = fi[ix,,drop = FALSE]
+    # <raw> subset
+    raw  = raw[ix,,drop = FALSE]
+    # Names of fi channels
+    fi_channels <- flowWorkspace::pData(flowCore::parameters(flowWorkspace::gh_pop_get_data(g))[ ,c("name", "desc")])
+    # Combine the names e.g., (<G780-A>) with desc  e.g., IL-17a
+    colnames(fi) <- paste(seq_len(ncol(fi)),fi_channels$name, fi_channels$desc, sep = "|")
+    # Assign rownams based on fcs_name and seq counter
+    rownames(fi) <- paste(fcs_name, seq_len(nrow(fi)), sep = "|")
+    rownames(pos) <- paste(fcs_name, seq_len(nrow(pos)), sep = "|")
+    
+    
+    fcs_cells = data.frame(list("cell"=seq_len(nrow(fi)),
+                                "sample_name"=sample_name,
+                                "experiment_name"=pd[[experiment_name]],#$`EXPERIMENT NAME`,
+                                "sample_order"=pd[[sample_order]],#$`Sample Order`,
+                                "stim"=pd[[stim]],#$Stim,
+                                "name"=pd[[name]], #$name,
+                                "total_ct" = total_events,
+                                "parent_ct"= parent_events,
+                                "dummy" = 0))
+    result = list('pos' = pos,
+                  'fi' = fi,
+                  'raw' = raw,
+                  'fcs_index' = fcs_cells)
+  }else{
+    # Get <fi> matrix of florescent intensity
+    fi  <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g))
+    raw <- flowCore::exprs(flowWorkspace::gh_pop_get_data(g, inverse.transform = TRUE))
+    
+    # This will be a dummy
+    # <pos> subset
+    pos   <- pos[1,,drop =FALSE]
+    pos[] <- 0
+    # <fi> subset
+    fi    <-  fi[1,,drop =FALSE]
+    fi[]  <- 0
+    # <raw> subset
+    raw   <-  raw[1,,drop =FALSE]
+    raw[] <- 0
+    # Names of fi channels
+    fi_channels <- flowWorkspace::pData(flowCore::parameters(flowWorkspace::gh_pop_get_data(g))[ ,c("name", "desc")])
+    # Combine the names e.g., (<G780-A>) with desc  e.g., IL-17a
+    colnames(fi) <- paste(seq_len(ncol(fi)),fi_channels$name, fi_channels$desc, sep = "|")
+    # Assign rownaems based on fcs_name and seq counter
+    rownames(fi) <- paste(fcs_name, seq_len(nrow(fi)), sep = "|")
+    rownames(pos) <- paste(fcs_name, seq_len(nrow(pos)), sep = "|")
+    
+    # NOTE WE HAVE FLAGGED THIS A DUMMY RESULT BECAUSE THERE WERE NOT POSITIVE CELLS
+    fcs_cells = data.frame(list("cell"=0,
+                                "sample_name"=sample_name,
+                                "experiment_name"=pd[[experiment_name]],#$`EXPERIMENT NAME`,
+                                "sample_order"=pd[[sample_order]],#$`Sample Order`,
+                                "stim"=pd[[stim]],#$Stim,
+                                "name"=pd[[name]], #$name,
+                                "total_ct" = total_events,
+                                "parent_ct"= parent_events,
+                                "dummy" = 1))
+    result = list('pos' = pos,
+                  'fi' = fi,
+                  'raw' = raw,
+                  'fcs_index' = fcs_cells)
+    
+  }
 
-
-  fcs_cells = data.frame(list("cell"=seq_len(nrow(fi)),
-                              "experiment_name"=pd[[experiment_name]],#$`EXPERIMENT NAME`,
-                              "sample_order"=pd[[sample_order]],#$`Sample Order`,
-                              "stim"=pd[[stim]],#$Stim,
-                              "name"=pd[[name]], #$name,
-                              "total_ct" = total_events,
-                              "parent_ct"= parent_events))
-  result = list('pos' = pos,
-                'fi' = fi,
-                'raw' = raw,
-                'fcs_index' = fcs_cells)
 
   return(result)
 }

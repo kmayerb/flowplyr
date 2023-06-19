@@ -76,6 +76,7 @@ for (i in 1:length(my_gs)){
     # HARD CODED, DEPRICATED BY LINE ABOVE
     #fcs_name <- paste(pd$`EXPERIMENT NAME`, pd$"Sample Order", pd$Replicate, pd$Stim, pd$name, sep = "|")
     my_result = extract_events(g                  = my_gs[[i]],
+                               sample_name        = sample_name,
                                parent_gate        = params$parent_gate,
                                markers            = params$markers,
                                functional_markers = params$functional_markers,
@@ -135,14 +136,14 @@ if (params$write_h5){
   if (!dir.exists(params$output_path)){dir.create(params$output_path)}
   if (file.exists(h5_name)){file.remove(h5_name)}
   rhdf5::h5createFile(h5_name)
-  rhdf5::h5createGroup(h5_name ,"data")
-  rhdf5::h5write(pos_, h5_name, "data/pos")
-  rhdf5::h5write(fi_,  h5_name, "data/fi")
-  rhdf5::h5write(raw_,  h5_name, "data/raw")
-  rhdf5::h5write(fcs_, h5_name, "data/fcs_index")
-  rhdf5::h5write(cols_pos, h5_name, "data/cols_pos")
-  rhdf5::h5write(cols_fi, h5_name, "data/cols_fi")
-  rhdf5::h5write(trans_, h5_name, "data/transform_wide")
+  rhdf5::h5createGroup(       h5_name, "data")
+  rhdf5::h5write(pos_,        h5_name, "data/pos")
+  rhdf5::h5write(fi_,         h5_name, "data/fi")
+  rhdf5::h5write(raw_,        h5_name, "data/raw")
+  rhdf5::h5write(fcs_,        h5_name, "data/fcs_index")
+  rhdf5::h5write(cols_pos,    h5_name, "data/cols_pos")
+  rhdf5::h5write(cols_fi,     h5_name, "data/cols_fi")
+  rhdf5::h5write(trans_,      h5_name, "data/transform_wide")
   rhdf5::h5write(trans_long_, h5_name, "data/transform_long")
   rhdf5::h5closeAll()
 }
