@@ -1,0 +1,117 @@
+# maps.R
+
+pos_map =
+  c("IFNg+"         ="IFNg", 
+    "IL2+"          ="IL2", 
+    "TNFa+"         ="TNF", 
+    "154+"          ="CD154", 
+    "IL4_OR_IL13"   ="IL4_OR_IL13", 
+    "IL17A_OR_IL17F"="IL17A_OR_IL17F", 
+    "4+RA+"         ="CD45RA", 
+    "CXCR3+"        ="CXCR3" , 
+    "153+"          ="CD153",
+    "CCR6+"         ="CCR6",
+    "R7+"           ="CCR7",
+    "DR+"           ="HLA-DR",
+    "Ki67+"         ="Ki67",
+    "GM-CSF"        ="GM-CSF", 
+    "Perf+"         ="Perf",
+    "Granulysin+"   ="Granulysin", 
+    "NKG2C+"        ="NKG2C", 
+    "CM"            ="CM", 
+    "EM"            ="EM", 
+    "TD"            ="TD",
+    "Naive"         ="Naive")
+
+gate_to_channel <- c(
+  "153+"          =  "11|<R660-A>|CD153 APC",
+  "154+"          =  "27|<U730-A>|CD154 BUV737",
+  "4+RA+"         =  "24|<U500-A>|CD45RA BUV496",
+  "CCR6+"         =  "19|<V710-A>|CCR6 BV711",
+  "CXCR3+"        =  "31|<G660-A>|CXCR3 PE-Cy5",
+  "DR+"           =  "32|<G710-A>|HLA-DR PE-Cy5-5",
+  "GM-CSF"        =  "30|<G610-A>|GM-CSF PE-Dazzle594",
+  "Granulysin+"   =  "29|<G575-A>|GranLys PE",
+  "IFNg+"         =  "14|<V450-A>|IFN-g V450",
+  "IL17A_OR_IL17F"=  "33|<G780-A>|IL-17a/IL-17F PE-Cy7",
+  "IL2+"          =  "9|<B710-A>|IL-2 BB700",
+  "IL4_OR_IL13"   =  "7|<B610-A>|IL-4/IL-13 BB630",
+  "Ki67+"         =  "8|<B660-A>|Ki67 BB660",
+  "NKG2C+"        =  "18|<V655-A>|NKG2C BV650",
+  "Perf+"         =  "12|<R710-A>|Perforin Ax700",
+  "R7+"           =  "21|<V780-A>|CCR7 BV785",
+  "TNFa+"         =  "22|<U395-A>|TNF-a BUV395")
+
+all_fi_channels <- c(
+  "Time"           = "1|Time|NA",
+  "FSC-A"          = "2|FSC-A|NA",
+  "FSC-H"          = "3|FSC-H|NA",
+  "SSC-A"          = "4|SSC-A|NA",
+  "SSC-H"          = "5|SSC-H|NA",
+  "MR1"            = "6|<B515-A>|MR1 Ax488",
+  "IL-4/IL-13"     = "7|<B610-A>|IL-4/IL-13 BB630",
+  "Ki67"           = "8|<B660-A>|Ki67 BB660",
+  "IL-2"           = "9|<B710-A>|IL-2 BB700",
+  "CD14"           = "10|<B780-A>|CD14 BB790",
+  "CD153"          = "11|<R660-A>|CD153 APC",
+  "Perforin"       = "12|<R710-A>|Perforin Ax700",
+  "CD3"            = "13|<R780-A>|CD3 APC-Fire 750",
+  "IFN-g"          = "14|<V450-A>|IFN-g V450",
+  "CD4"            = "15|<V510-A>|CD4 BV480",
+  "CD16"           = "16|<V570-A>|CD16 BV570",
+  "TCR Vd2"        = "17|<V610-A>|TCR Vd2 BV605",
+  "NKG2C"          = "18|<V655-A>|NKG2C BV650",
+  "CCR6"           = "19|<V710-A>|CCR6 BV711",
+  "CD56"           = "20|<V750-A>|CD56 BV750",
+  "CCR7"           = "21|<V780-A>|CCR7 BV785",
+  "TNF-a"          = "22|<U395-A>|TNF-a BUV395",
+  "UViD"           = "23|<U450-A>|UViD",
+  "CD45RA"         = "24|<U500-A>|CD45RA BUV496",
+  "TCRVa24-Ja18"   = "25|<U570-A>|TCRVa24-Ja18 BUV563",
+  "TCR gd"         = "26|<U660-A>|TCR gd BUV661",
+  "CD154"          = "27|<U730-A>|CD154 BUV737",
+  "CD8a"           = "28|<U780-A>|CD8a BUV805",
+  "GranLys"        = "29|<G575-A>|GranLys PE",
+  "GM-CSF"         = "30|<G610-A>|GM-CSF PE-Dazzle594",
+  "CXCR3"          = "31|<G660-A>|CXCR3 PE-Cy5",
+  "HLA-DR"         = "32|<G710-A>|HLA-DR PE-Cy5-5",
+  "IL-17a/IL-17F"  = "33|<G780-A>|IL-17a/IL-17F PE-Cy7")
+
+
+cluster_channels <- c(
+  "MR1"            = "6|<B515-A>|MR1 Ax488",
+  "IL-4/IL-13"     = "7|<B610-A>|IL-4/IL-13 BB630",
+  "Ki67"           = "8|<B660-A>|Ki67 BB660",
+  "IL-2"           = "9|<B710-A>|IL-2 BB700",
+  "CD14"           = "10|<B780-A>|CD14 BB790",
+  "CD153"          = "11|<R660-A>|CD153 APC",
+  "Perforin"       = "12|<R710-A>|Perforin Ax700",
+  "CD3"            = "13|<R780-A>|CD3 APC-Fire 750",
+  "IFN-g"          = "14|<V450-A>|IFN-g V450",
+  "CD4"            = "15|<V510-A>|CD4 BV480",
+  "CD16"           = "16|<V570-A>|CD16 BV570",
+  "TCR Vd2"        = "17|<V610-A>|TCR Vd2 BV605",
+  "NKG2C"          = "18|<V655-A>|NKG2C BV650",
+  "CCR6"           = "19|<V710-A>|CCR6 BV711",
+  "CD56"           = "20|<V750-A>|CD56 BV750",
+  "CCR7"           = "21|<V780-A>|CCR7 BV785",
+  "TNF-a"          = "22|<U395-A>|TNF-a BUV395",
+  "UViD"           = "23|<U450-A>|UViD",
+  "CD45RA"         = "24|<U500-A>|CD45RA BUV496",
+  "TCRVa24-Ja18"   = "25|<U570-A>|TCRVa24-Ja18 BUV563",
+  "TCR gd"         = "26|<U660-A>|TCR gd BUV661",
+  "CD154"          = "27|<U730-A>|CD154 BUV737",
+  "CD8a"           = "28|<U780-A>|CD8a BUV805",
+  "GranLys"        = "29|<G575-A>|GranLys PE",
+  "GM-CSF"         = "30|<G610-A>|GM-CSF PE-Dazzle594",
+  "CXCR3"          = "31|<G660-A>|CXCR3 PE-Cy5",
+  "HLA-DR"         = "32|<G710-A>|HLA-DR PE-Cy5-5",
+  "IL-17a/IL-17F"  = "33|<G780-A>|IL-17a/IL-17F PE-Cy7")
+
+
+all_fi_channels_rev = names(all_fi_channels)
+names(all_fi_channels_rev ) <- all_fi_channels
+# user will decide what channels to cluster
+cluster_channels = cluster_channels
+# umap channel will likely be the 
+umap_channels = cluster_channels
