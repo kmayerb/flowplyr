@@ -154,7 +154,7 @@ unpack_data_hdf5 <- function(hdf5_path){
               fcs = fcs_,
               pos = pos_, 
               fi = fi_,
-              raw = raw_.
+              raw = raw_,
               all_samples = all_samples_,
               subset_samples = subset_samples_))
 }

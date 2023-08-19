@@ -22,6 +22,7 @@ if (!file.exists(params_file)) {
 }
 
 # Read and parse the JSON params file
+#params <- jsonlite::fromJSON('tests/aeras/1814-R-C040-404_BCG_Correlates_Pilot.params.json')
 params <- jsonlite::fromJSON(params_file)
 print(params)
 

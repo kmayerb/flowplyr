@@ -110,12 +110,12 @@ get_cluster_pctpos_pctposadj <- function(data_pos,
   data_pos_freq_summary = data_pos_freq %>% 
     dplyr::left_join(data_pos_freq_negctrl, 
                      by = join_vars, 
-                     suffix = c(".pos",".neg")) %>%
+                     suffix = c(".pos",".neg"))%>%
     dplyr::mutate(count.neg = tidyr::replace_na(count.neg, 0))%>%
     dplyr::mutate(freq.neg = tidyr::replace_na(freq.neg, 0)) %>%
-    dplyr::mutate(freq.neg = ifelse(is.na(stim.neg,
+    dplyr::mutate(stim.neg = ifelse(is.na(stim.neg),
                                           params$negative_stim_string,
-                                          stim.neg))) %>%
+                                          stim.neg)) %>%
     dplyr::mutate(pctpos = freq.pos, 
                   pctposadj = freq.pos-freq.neg)
   

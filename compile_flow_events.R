@@ -5,9 +5,6 @@
 # Rscript compile_flow_events.R --params tests/test_summarize.json --annoy_cluster TRUE --umap TRUE
 #params = jsonlite::fromJSON('/fh/fast/gilbert_p/fg_data/flowplyr/tests/test_summarize.json')
 # read a .json file with run paramters
-
-
-
 parser <- argparser::arg_parser(
   description='compile_flow_events - extract events from mulitple batches
   from .hdf5 formatted data')
@@ -43,8 +40,6 @@ if (!file.exists(params_file)) {
 source('R/open_hdf5.R')
 suppressMessages(require(magrittr))
 suppressMessages(require(dplyr))
-
-
 
 # Start a Log file
 log_file <- paste0(".complile_flow_events.log")
