@@ -1,5 +1,65 @@
 # flowplyr
-Read and manipulate .fcs, .xml files associated with flow cytometry events for downstream analysis
+
+Read and manipulate .fcs, .xml files associated with flow cytometric events 
+for downstream analysis. 
+
+
+### Quick Start
+
+#### Pipeline
+
+```
+cd /fh/fast/gilbert_p/fg_data/flowplyr
+ml fhR/4.2.0-foss-2021b
+Rscript startup.R \
+   --run_name $RUN_NAME \
+   --base_dir $BASE_DIR \
+   --output_path $OUTPUT_PATH \
+   --fcm08_path $FCM08_PATH \ 
+   --fcs_folder_path $FCS_FOLDER_PATH \
+   --xml_file_path $XML_FILE_PATH \
+   --parent_gate $PARENT_GATE \
+   --stim_exclusion_terms $STIM_EXCLUSION_TERMS \
+   --functional_markers $FUNCTIONAL_MARKERS \
+   --xml_keywords $XML_KEYWORDS
+Rscript run_slurm.R –folder $OUTPUT_PATH –pattern ’extract_.*.sh$’ -dry_run FALSE
+Rscript compile_flow_events.R –params $OUPUT_PATH/pipeline.json –annoy_cluster TRUE
+tree $OUTPUT_PATH
+```
+
+#### Resulting Outputs
+
+```
+2023-11-15_D5305A0B_CD4_TESTRUN/
+├── 3264-B-HVTN137.h5
+├── 3265-T-HVTN137.h5
+├── 3563-T-HVTN137_Part_A.h5
+├── batches_compiled_all_events.h5
+├── batches_compiled_subset_annoy_clustering.h5
+├── batches_compiled_subset_clustering.h5
+├── batches_compiled_subset_events.h5
+├── batches_compiled_subset_umap.h5
+├── extract_3264-B-HVTN137.json
+├── extract_3264-B-HVTN137.sh
+├── extract_3265-T-HVTN137.json
+├── extract_3265-T-HVTN137.sh
+├── extract_3563-T-HVTN137_Part_A.json
+├── extract_3563-T-HVTN137_Part_A.sh
+├── metadata.csv
+└── pipeline.json
+```
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### test data
 
@@ -101,6 +161,13 @@ specify these parameters in a `param.json` file
 ```
 Rscript extract_flow_events.R --params tests/test_params.json
 ```
+
+
+
+
+
+
+
 
 ### Outputs
 
