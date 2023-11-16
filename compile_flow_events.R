@@ -2,6 +2,8 @@
 # This script is used after extracting flow events
 # parameters arguments are provided in a .json file
 
+
+
 # Rscript compile_flow_events.R --params tests/test_summarize.json --annoy_cluster TRUE --umap TRUE
 #params = jsonlite::fromJSON('/fh/fast/gilbert_p/fg_data/flowplyr/tests/test_summarize.json')
 # read a .json file with run paramters
@@ -86,6 +88,9 @@ verb <- function(params){
 }
 if (args$verbose ){verb(params)}
 
+# reconcile
+params$cluster_markers = params$cluster_channels
+
 
 is_list_not_null <- function(input_list) {
   if (!is.null(input_list) && length(input_list) > 0) {
@@ -96,18 +101,28 @@ is_list_not_null <- function(input_list) {
 }
 
 cat("\n")
-cat('.........................................................\n')
-cat('..####....####...##...##..#####...######..##......######.\n')
-cat('.##..##..##..##..###.###..##..##....##....##......##.....\n')
-cat('.##......##..##..##.#.##..#####.....##....##......####...\n')
-cat('.##..##..##..##..##...##..##........##....##......##.....\n')
-cat('..####....####...##...##..##......######..######..######.\n')
-cat('.........................................................\n')
+cat('..d8888b...................................d8b.888.........\n')
+cat('d88P..Y88b.................................Y8P.888.........\n')
+cat('888....888.....................................888.........\n')
+cat('888..........d88b...88888b.d88b...88888b...888.888...d88b..\n')
+cat('888........d88""88b.888."888."88b.888."88b.888.888.d8P..Y8b\n')
+cat('888....888.888..888.888..888..888.888..888.888.888.88888888\n')
+cat('Y88b..d88P.Y88..88P.888..888..888.888.d88P.888.888.Y8b.....\n')
+cat('."Y8888P"..."Y88P"..888..888..888.88888P"..888.888.."Y8888.\n')
+cat('..................................888......................\n')
+cat('....flowplyr v1.0.................888......................\n')
+cat('..................................888......................\n')
+cat("\n")
 # Step 1: Load metadata across batches from <metadata_file> param
 cat("\nStep 1: Load metadata across batches from <metadata_file> param\n")
 cat(paste0("\t", params$metadata_file,"\n"))
 
 metadata = read.csv(params$metadata_file)
+
+if ('experiment_name' %in% names(metadata)){
+  metadata = metadata %>% mutate(batch = experiment_name)
+}
+#print(metadata %>% head())
 stopifnot('batch' %in% names(metadata))
 stopifnot('sample_order' %in% names(metadata))
 stopifnot('ptid' %in% names(metadata))
@@ -121,8 +136,23 @@ data = unpack_hdf5s(paths = params$batch_list)
 
 cat("Step 3: Fix the names in the data$pos matrix using <pos_map>\n")
 pos_map = params$pos_map
+#print(pos_map)
+#print(colnames(data$pos)[!colnames(data$pos) %in% names(pos_map)])
 if (!is.null(params$pos_map)){
-  colnames(data$pos) <- as.vector(pos_map[colnames(data$pos)])
+  
+  # A function that acts like python dictionary.get(x,x)
+  get_or_default <- function(dict, key, default = key) {
+    if (key %in% names(dict)) {
+      return(dict[key])
+    } else {
+      warning(stringr::str_glue("\n!!!\tThe marker: ", key, " was unchanged"))
+      return(default)
+    }
+  }
+  
+  mapped_names = sapply(colnames(data$pos), get_or_default, dict = pos_map)
+  colnames(data$pos) <- as.vector( mapped_names )
+  #print(head(data$pos))
 }
 if (!is.null(params$fi_map)){
   colnames(data$raw) <- as.vector(fi_map[colnames(data$raw)])
@@ -233,8 +263,11 @@ if (args$umap){
   cat("Step 7a: Finding UMAP coordinates for the subset data\n")
   cat(paste0("\tFinding UMAP on ", dim(data_subset$fi)[1], " cells"))
   set.seed(1)
+  print(params$cluster_markers)
+  #print(colnames(data_subset$fi))
+  #print(params$umap_markers[!params$cluster_markers %in% colnames(data_subset$fi)])
   start_time <- Sys.time()
-  data_umap = uwot::umap(data_subset$fi[,params$umap_markers], 
+  data_umap = uwot::umap(data_subset$fi[,params$cluster_markers], 
                          n_neighbors   = params$umap_n_neighors,
                          learning_rate = params$umap_learning_rate,
                          init = "random") 
@@ -349,7 +382,7 @@ if (args$annoy_cluster){
                    h5_path = params$h5_output_path_subset_events_annoy_clustering,
                    fcs_ptid = data_subset$fcs_ptid)
 
-  }
+}
 
 ## LEIDEN PHENOGRAPH CLUSTERING USING EXACT NN (RANN) BASED CLUSTERING
 if (args$cluster){

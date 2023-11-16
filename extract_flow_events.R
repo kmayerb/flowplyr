@@ -45,9 +45,9 @@ message(sprintf("%s Loaded a Gating Set with %s Samples", format(Sys.time(), "%X
 message(sprintf("%s Gating Paths:", format(Sys.time(), "%X")))
 message(paste0("\n",flowWorkspace::gs_get_pop_paths(my_gs)))
 #
-message(sprintf("%s Makers:", format(Sys.time(), "%X")))
+message(sprintf("%s Markers:", format(Sys.time(), "%X")))
 print(params$markers)
-message(sprintf("%s Key Makers:", format(Sys.time(), "%X")))
+message(sprintf("%s Functional Markers:", format(Sys.time(), "%X")))
 print(params$functional_markers)
 
 
@@ -59,8 +59,8 @@ store = list()
 store_trans = list()
 # Loop through each gated entry in the gated set
 for (i in 1:length(my_gs)){
-  sample_name = flowWorkspace::sampleNames(my_gs)[i]
   pd = flowWorkspace::pData(my_gs[[i]])
+  sample_name = flowWorkspace::sampleNames(my_gs)[i]
   
   
   stimulation_name = pd[[params$stim]]

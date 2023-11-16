@@ -116,7 +116,7 @@ extract_events <- function(g,
   
   # Get <pos> is a matrix of booleans whether an event falls in a specific gate
   #   it has row dimensions events, column dimensions markers
-  pos <- vapply(X         = markers,
+  pos <- vapply(X         = functional_markers,
                 FUN       = function(x) flowWorkspace::gh_pop_get_indices(g, file.path(parent_gate, x)),
                 FUN.VALUE = logical(total_events))
 

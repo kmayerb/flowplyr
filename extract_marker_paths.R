@@ -1,10 +1,10 @@
 # Help identify the parent path
 # May 24, 2023
-# Use this commandline tool to inspect potential marker paths
+# Use this command line tool to inspect potential marker paths
 
 source('R/validate_input.R')
 source('R/extract.R')
-
+require(magrittr)
 # Examples:
 # 1. Example with direct commandline inputs
 # Rscript extract_marker_paths.R \
@@ -74,3 +74,5 @@ print(dput(extract_cd4_markers(my_gs)))
 message(sprintf("%s key CD8 Markers", format(Sys.time(), "%X")))
 print(dput(extract_cd8_markers(my_gs)))
 
+data.frame(all_markers) %>% write.csv("_all_markers.csv")
+data.frame(all_marker_paths) %>% write.csv("_all_marker_paths.csv")

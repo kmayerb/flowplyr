@@ -229,6 +229,8 @@ unpack_summary_hdf5 <- function(hdf5_path){
               fcs_ptid_cluster = fcs_ptid_cluster_))
 }
 
+
+
 is_list_not_null <- function(input_list) {
   if (!is.null(input_list) && length(input_list) > 0) {
     return(TRUE)
@@ -236,4 +238,19 @@ is_list_not_null <- function(input_list) {
     return(FALSE)
   }
 }
+
+
+# h = hdf5r::h5file(hdf5_path_results,
+#                   mode= 'r' )
+# summary = list()
+# sample_summary   = hr[['summary/results']][]
+# if(use_clusters){
+#   events         = hr[['summary/fcs_ptid_cluster']][]
+# }else{
+#   events         = hr[['summary/fcs_ptid']][]
+# }
+# summary$results = results
+# summary$events  = events 
+# h$close_all()
+# return(summary)
 
