@@ -45,6 +45,7 @@ generate_metadata <- function(fcm08_filepath       = params$fcm08_path,
                               stim_exclusion_terms = params$stim_exclusion_terms){
   
   fcm08a = readr::read_tsv(fcm08_filepath)
+  stopifnot(parent_gate %in% fcm08a$SUBSET)
   metadata = fcm08a %>% 
     filter(SUBSET == parent_gate) %>%
     select(experiment_name = ASSAYID, 

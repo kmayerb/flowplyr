@@ -70,7 +70,7 @@ params   <- argparser::parse_args(parser)
 params$stim_exclusion_terms = stringr::str_split(params$stim_exclusion_terms,",")[[1]]
 params$xml_keywords       = stringr::str_split(params$xml_keywords, ",")[[1]]
 params$functional_markers = stringr::str_split(params$functional_markers, ",")[[1]]
-params$flowplyr_dir = 'fh/fast/gilbert_p/fg_data/flowplyr'
+params$flowplyr_dir = '/fh/fast/gilbert_p/fg_data/flowplyr'
 print(params)
 
 require(dplyr)
@@ -95,7 +95,7 @@ if (testing_only){
   # positivivity for one or more of these markers is needed to retain the event
   params[["functional_markers"]] = c("IFNg+","IL2+","TNFa+","154+","IL4+","IL5_OR_IL13","IL17a+")
   params[['xml_keywords']]       = c( "$FIL","Stim","Sample Order","EXPERIMENT NAME","Replicate")
-  params$flowplyr_dir = 'fh/fast/gilbert_p/fg_data/flowplyr'
+  params$flowplyr_dir = '/fh/fast/gilbert_p/fg_data/flowplyr'
 }
 
 # <marker_io> 
@@ -105,8 +105,7 @@ if (testing_only){
 marker_io = readxl::read_xlsx("marker_mapping.xlsx")$output
 names(marker_io) = readxl::read_xlsx("marker_mapping.xlsx")$input
 
-# Step 1.
-
+# Step 1. Create folder for the remainder of the project
 # If no output path is created on will be created with a random date/string/run_name
 if (is.na(params$output_path)){
   # Get the current date
@@ -123,9 +122,10 @@ if (is.na(params$output_path)){
   output_path = params$output_path
   run_name = params$run_name
 }
-
-cat(paste0("\nStep 1:  Step 1: Create a folder for the run: ", params$run_name, "\n"))
+cat(paste0("\nStep 1:  Step 1: Created a folder for the run: ", params$run_name, "\n"))
 cat(paste0("\t", output_path,"\n"))
+
+
 
 # Step 2: Get metadata, write metadata
 metadata = generate_metadata(fcm08_filepath       = params$fcm08_path,
@@ -141,7 +141,7 @@ cat(paste0("\n Wrote metadata file to: ",
 
 # Step 3: 
 cat(paste0("\nStep 3: Identify the number of batches in metadata file\n")) 
-batches = metadata %>% pull( experiment_name) %>% unique() %>% sort()
+batches = metadata %>% pull(experiment_name) %>% unique() %>% sort()
 for (i in 1:length(batches)){
   cat(paste0("\tBatch ", i, " -- ", batches[i], "\n"))
 }

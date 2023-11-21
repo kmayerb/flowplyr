@@ -100,7 +100,7 @@ extract_events <- function(g,
 
   # #Extract meta-data, on the experiment name <exp_name> and <fcs_name>
   pd = flowWorkspace::pData(g)
-    exp_name <- pd[[experiment_name]]
+  exp_name <- pd[[experiment_name]]
   fcs_name <- paste(pd[[experiment_name]], 
                     pd[[sample_order]], 
                     pd[[replicate]], 
@@ -116,7 +116,7 @@ extract_events <- function(g,
   
   # Get <pos> is a matrix of booleans whether an event falls in a specific gate
   #   it has row dimensions events, column dimensions markers
-  pos <- vapply(X         = functional_markers,
+  pos <- vapply(X         = markers,
                 FUN       = function(x) flowWorkspace::gh_pop_get_indices(g, file.path(parent_gate, x)),
                 FUN.VALUE = logical(total_events))
 

@@ -10,24 +10,29 @@
 parser <- argparser::arg_parser(
   description='compile_flow_events - extract events from mulitple batches
   from .hdf5 formatted data')
-
 parser <- argparser::add_argument(parser, arg="--params", 
                                   type="character",
                                   default = NA, help = "path to parameters as a .json file")
 parser <- argparser::add_argument(parser, arg="--cluster", 
                                   type="boolean",
                                   default = FALSE, help = "Run Leiden Phenograph")
-
 parser <- argparser::add_argument(parser, arg="--annoy_cluster", 
                                   type="boolean",
                                   default = FALSE, help = "Run Leiden Phenograph with Annoy")
-
 parser <- argparser::add_argument(parser, arg="--umap", 
                                   type="boolean",
                                   default = FALSE, help = "Run Umap")
 parser <- argparser::add_argument(parser, arg="--verbose", 
                                   type="boolean",
                                   default = FALSE, help = "extra verbosity")
+parser <- argparser::add_argument(parser, arg="--override_params", 
+                                  type="character",
+                                  default = NA, 
+                                  help = "override arguments (comma seperated), will over write params.json")
+parser <- argparser::add_argument(parser, arg="--override_values", 
+                                  type="character",
+                                  default = NA, 
+                                  help = "override arguments (comma seperated), will over write params.json")
 args   <- argparser::parse_args(parser)
 
 # Get the JSON params file path from the command line
@@ -37,6 +42,35 @@ if (!file.exists(params_file)) {
   cat("Error: The specified JSON params file does not exist.\n")
   quit(status = 1)
 }
+params <- jsonlite::fromJSON(params_file)
+if ( (!is.na(args$override_params)) & 
+     (!is.na(args$override_values))){
+  raw_args = stringr::str_split(args$override_params, ",")[[1]]
+  raw_params = stringr::str_split(args$override_values, ",")[[1]]
+  names(raw_params) = raw_args
+  cat("Will attempt override:\n")
+  for (arg in names(raw_params)){
+    cat(paste("Overriding", arg, "with", raw_params[[arg]], "\n"))
+    print(arg)
+    if (arg %in% names(params)){
+      value = raw_params[[arg]]
+      target_class = class(params[[arg]])
+      #print(value)
+      print(target_class)
+      value <- switch(target_class,
+                      "integer" = as.integer(value),
+                      "numeric" = as.numeric(value),
+                      "character" = as.character(value),
+                      "logical" = as.logical(value),
+                      stop("Unsupported class type"))
+      #print(value)
+      params[[arg]] = value
+    } else {
+      params[[arg]] = raw_params[[arg]]
+    }
+  }
+}
+print(params)
 
 # LOAD 
 source('R/open_hdf5.R')
@@ -51,8 +85,7 @@ cat("Running compile_flow_event.R\n")
 cat(paste0("See log file: ",log_file,"\n"))
 cat(paste0("Run started :", format(current_time, format = "%Y-%m-%d %H:%M:%S")))
 
-# Read and parse the JSON params file
-params <- jsonlite::fromJSON(params_file)
+
 # A function for messaging the contents of the params.json
 verb <- function(params){
   cat('\n"h5_output_path_all_events:\n\t')
@@ -118,12 +151,17 @@ cat("\nStep 1: Load metadata across batches from <metadata_file> param\n")
 cat(paste0("\t", params$metadata_file,"\n"))
 
 metadata = read.csv(params$metadata_file)
+print(params$metadata_file)
 
+#reconcile add batch if only experiment name is prsent
 if ('experiment_name' %in% names(metadata)){
   metadata = metadata %>% mutate(batch = experiment_name)
 }
-#print(metadata %>% head())
-stopifnot('batch' %in% names(metadata))
+metadata <- metadata %>% group_by(experiment_name, stim, sample_order) %>% 
+  slice(1)
+print(head(metadata))
+print(metadata)
+stopifnot('experiment_name' %in% names(metadata))
 stopifnot('sample_order' %in% names(metadata))
 stopifnot('ptid' %in% names(metadata))
 stopifnot('visit' %in% names(metadata))
@@ -162,12 +200,20 @@ if (!is.null(params$fi_map)){
 cat("Step 4: Add metadata to the data$fcs dataframe, by batch and sample order\n")
 data$fcs$sample_order <- as.character(data$fcs$sample_order)
 metadata$sample_order <- as.character(metadata$sample_order)
+
+print(head(metadata))
+
 data$fcs_ptid = data$fcs %>% 
   left_join(metadata, 
-            by = c("batch","sample_order"))
+            by = c("experiment_name","sample_order", "stim"))
+
+metadata %>% 
+  group_by(experiment_name, sample_order, stim) %>% 
+  tally() 
+
 # defensive, make sure that left join was 1 to 1
 if (!( dim(data$fcs_ptid)[1] == dim(data$fcs)[1] )){
-  stop("Your metadata file did not perfectly match the batch, sample_order info")
+  stop("Your metadata file did not perfectly match the experiment_name, sample_order info")
 }
 # defensive, make sure no NA in ptid column, issue warning if ther is
 if(any(is.na(data$fcs_ptid$ptid))){
@@ -178,7 +224,7 @@ if(any(is.na(data$fcs_ptid$ptid))){
 # We need to store unique sample count
 unique_samples = data$fcs_ptid %>% 
   group_by(dummy, 
-           batch, 
+           experiment_name, 
            sample_order,
            sample_name, 
            ptid,
@@ -198,7 +244,7 @@ data_subset = get_data_subset(data,
 
 unique_samples_subset <- data_subset$fcs_ptid %>% 
   group_by(dummy, 
-           batch, 
+           experiment_name, 
            sample_order,
            sample_name, 
            ptid,

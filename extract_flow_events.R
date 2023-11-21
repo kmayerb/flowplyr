@@ -1,30 +1,31 @@
 # May 24, 2023
 # Command Line Version to Extract Flow Events Data
 source("R/extract.R")
+source("R/override.R")
 require(magrittr)
 # read a .json file with run paramters
-
-parser <- argparser::arg_parser(
-  description='extract_flow_events - extract events from FlowJo to .hdf5 format')
-
-parser <- argparser::add_argument(parser, arg="--params", type="character",default = NA, help = "path to json.param")
-args   <- argparser::parse_args(parser)
-
-# Show the argument values
-print(args)
-
-# Get the JSON params file path from the command line
-params_file <- args$params
-# Check if the file exists
-if (!file.exists(params_file)) {
-  cat("Error: The specified JSON params file does not exist.\n")
-  quit(status = 1)
+use_override = FALSE
+if (use_override){
+  params = json_params_with_overrides()
+} else {
+  parser <- argparser::arg_parser(
+    description='extract_flow_events - extract events from FlowJo to .hdf5 format')
+  parser <- argparser::add_argument(parser, arg="--params", type="character",default = NA, help = "path to json.param")
+  args   <- argparser::parse_args(parser)
+  # Show the argument values
+  print(args)
+  # Get the JSON params file path from the command line
+  params_file <- args$params
+  # Check if the file exists
+  if (!file.exists(params_file)) {
+    cat("Error: The specified JSON params file does not exist.\n")
+    quit(status = 1)
+  }
+  params <- jsonlite::fromJSON(params_file)
 }
-
-# Read and parse the JSON params file
-#params <- jsonlite::fromJSON('tests/aeras/1814-R-C040-404_BCG_Correlates_Pilot.params.json')
-params <- jsonlite::fromJSON(params_file)
 print(params)
+
+
 
 # these are additional params that we may need to hard code
 params$experiment_name = 'EXPERIMENT NAME'
