@@ -22,11 +22,40 @@ Rscript startup.R \
    --stim_exclusion_terms $STIM_EXCLUSION_TERMS \
    --functional_markers $FUNCTIONAL_MARKERS \
    --xml_keywords $XML_KEYWORDS
-Rscript run_slurm.R –folder $OUTPUT_PATH –pattern ’extract_.*.sh$’ -dry_run FALSE
+Rscript run_sbatch.R –folder $OUTPUT_PATH –pattern ’extract_.*.sh$’ -dry_run FALSE
 Rscript compile_flow_events.R –params $OUPUT_PATH/pipeline.json –annoy_cluster TRUE
 tree $OUTPUT_PATH
 ```
 
+#### startup 
+e.g., 
+```
+cd /fh/fast/gilbert_p/fg_data/flowplyr
+ml fhR/4.2.0-foss-2021b
+Rscript startup.R \
+--run_name 'VTN137_Part_A_CD4_TESTRUN' \
+--base_dir '/fh/fast/gilbert_p/fg_data/VTN137/ics/facs_raw/' \
+--fcm08_path '/fh/fast/gilbert_p/fg_data/VTN137/ics/fcm08_raw/vtn137_AP51_fcm08_FH_AP51_20220907.txt' \
+--fcs_folder_path '/fh/fast/gilbert_p/fg_data/VTN137/ics/facs_raw/3264-B-HVTN137/' \
+--xml_file_path '/fh/fast/gilbert_p/fg_data/VTN137/ics/facs_raw/3264-B-HVTN137/3264-B-HVTN137 FJ.xml' \
+--parent_gate 'Time/S/Lv/K1/K2/K3/K4/K5/K6/K7/K8/14-/S/L/19-/3+/3+excl 16br/56-16-/4+' \
+--stim_exclusion_terms 'phactrl,sebctrl,posctrl' \
+--functional_markers 'IFNg+,IL2+,TNFa+,154+,IL4+,IL5_OR_IL13,IL17a+' \
+--xml_keywords '$FIL,Stim,Sample Order,EXPERIMENT NAME,Replicate'
+
+```
+
+#### running, extract bash scripts
+
+```
+Rscript run_sbatch.R –folder $OUTPUT_PATH –pattern ’extract_.*.sh$’ -dry_run FALSE
+```
+
+#### running compile_flow_events
+
+Rscript compile_flow_events.R –params $OUPUT_PATH/pipeline.json –annoy_cluster TRUE
+tree $OUTPUT_PATH
+```
 #### Resulting Outputs
 
 ```
@@ -48,15 +77,6 @@ tree $OUTPUT_PATH
 ├── metadata.csv
 └── pipeline.json
 ```
-
-
-
-
-
-
-
-
-
 
 
 
@@ -163,12 +183,6 @@ Rscript extract_flow_events.R --params tests/test_params.json
 ```
 
 
-
-
-
-
-
-
 ### Outputs
 
 The output if written in .h5 format has three component tables:
@@ -196,15 +210,3 @@ fi = pd.DataFrame(fi_.transpose(), columns = pd.Series(cols_fi).str.decode('UTF-
 assert(fcs_.shape[0] == pos.shape[0])
 assert(fcs_.shape[0] == fi.shape[0])
 ```
-
-
-### Larger test
-```
-XML_PATH="/fh/fast/gilbert_p/fg_data/POI_COR/data/Aeras C040-404 BCG Correlates PoI Pilot/new_XMLs_assoc_wFCM_20220908/1814-R-C040 BCG CoR v2-FJ.xml"
-FCS_PATH="/fh/fast/gilbert_p/fg_data/POI_COR/data/Aeras C040-404 BCG Correlates PoI Pilot/1814-R-C040-404 BCG"
-
-TESTPATH=/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data
-Rscript extract_marker_paths.R \
-  --xml_path $TESTPATH/flowplyr_test_data.xml \
-  --fcs_folder_path $TESTPATH/flowplyr_test_fcs_folder/
-
