@@ -13,6 +13,4 @@ Rscript startup.R \
 
 
 
-readr::read_tsv('/fh/fast/gilbert_p/fg_data/ics_test/flowplyr_test_data/fcm08_simulated.txt')
-
 
